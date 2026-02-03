@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MouseLook : MonoBehaviour
+public class CameraLookAround : MonoBehaviour
 {
 public enum RotationAxes {MouseXAndY = 0, MouseX = 1, MouseY = 2}
 

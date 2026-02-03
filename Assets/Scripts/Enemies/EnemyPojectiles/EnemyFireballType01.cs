@@ -1,20 +1,28 @@
 using NUnit.Framework;
 using UnityEngine;
 
-public class OutleaderFireball : MonoBehaviour
+//TODO 增加光源效果？
+public class EnemyFireballType01 : MonoBehaviour
 {
+    [SerializeField] private Sprite[] fireballSprites;
+    [SerializeField] private float fireballSpeed = 10f;
+    [SerializeField] private float ttl = 20f;
+    [SerializeField] private float fps = 6f;
+    [SerializeField] private int damage = 10;
     private Camera mainCam;
-    public Sprite[] fireballSprites;
-    public SpriteRenderer sr;
+    private SpriteRenderer sr;
     private int currentFrame = 0;
     private float spriteTimer = 0f;
-    private float ttlTimer = 20f;
-    public float fps = 6f;
-    public int damage = 9;
+    private float ttlTimer;
+    
 
     void Start()
     {
         mainCam = Camera.main;
+        ttlTimer = ttl;
+        sr = GetComponentInChildren<SpriteRenderer>();
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.linearVelocity = transform.forward * fireballSpeed;
     }
 
     void Update()

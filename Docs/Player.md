@@ -4,15 +4,15 @@ The player GameObject acts as the primary controller for the user. It integrates
 
 ## KeyboardMovement
 
-See [`KeyboardMovement.cs`](../Assets/Scripts/Player/KeyboardMovement.cs)
+See [`PlayerMovement.cs`](../Assets/Scripts/Player/PlayerMovement.cs)
 
-Keyboard movement input is read from [`InputManager`](./InputManager.md).
+Player movement input is read from [`InputManager`](./InputManager.md).
 
-`KeyboardMovement` handles player character controller movement, as well as giving an fake -9.8f gravity.
+`PlayerMovement` handles player character controller movement, as well as giving an fake -9.8f gravity.
 
 ## MouseLook
 
-See [`MouseLook.cs`](../Assets/Scripts/Player/MouseLook.cs)
+See [`CameraLookAround.cs`](../Assets/Scripts/Player/CameraLookAround.cs)
 
 Mouse movement input is read from [`InputManager`](./InputManager.md).
 
