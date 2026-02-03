@@ -2,6 +2,8 @@
 
 The player GameObject acts as the primary controller for the user. It integrates three core functional scripts.
 
+Player should be tagged as "Player".
+
 ## KeyboardMovement
 
 See [`PlayerMovement.cs`](../Assets/Scripts/Player/PlayerMovement.cs)
