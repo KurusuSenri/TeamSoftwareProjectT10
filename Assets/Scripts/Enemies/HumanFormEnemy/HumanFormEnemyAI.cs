@@ -36,7 +36,10 @@ public class HumanFormEnemyAI : EnemyAI
 {
     [Header("Health Config")]
     [SerializeField] private int health;
+    [SerializeField] private int damageCumulativeTillStun;
     private int damageCumulative;
+    [SerializeField] private float hurtStunDuration;
+    private float hurtStunTimer;
 
     [Header("AI State For Debug")]
     [SerializeField] private HumanFormEnemyAIState aiState;
@@ -65,6 +68,8 @@ public class HumanFormEnemyAI : EnemyAI
     [SerializeField] private float avoidObstacleDistance;
     [SerializeField] private float engageMoveMinDistance;
     [SerializeField] private float engageMoveMaxDistance;
+    [SerializeField] private float attackStartUpDuration;
+    private float attackStartUpTimer;
 
     void Start()
     {
@@ -75,21 +80,22 @@ public class HumanFormEnemyAI : EnemyAI
         engageState = HumanFormEnemyEngageState.TryMoveCloserToAttackTarget;
     }
 
-    public override void TakeDamage(int amount)
+    public override void TakeDamage(int damage)
     {
-        health -= amount;
-        damageCumulative += amount;
+        health -= damage;
+        damageCumulative += damage;
         if (health <= 0)
         {
             aiState = HumanFormEnemyAIState.Dead;
         }
         // if enough damage taken, play hurt animation
-        else if (damageCumulative >= 25)
+        else if (damageCumulative >= damageCumulativeTillStun)
         {
             damageCumulative = 0;
             // only play hurt animation if not already in knockback state
             if (aiState != HumanFormEnemyAIState.KnockBack)
             {
+                hurtStunTimer = hurtStunDuration;
                 animator.BeginAnimation(HumanFormEnemyAnimationState.Hurt);
                 aiState = HumanFormEnemyAIState.Hurt;
             }
@@ -103,6 +109,7 @@ public class HumanFormEnemyAI : EnemyAI
         animator.BeginAnimation(HumanFormEnemyAnimationState.Hurt);
         direction.y = 0f;
         direction.Normalize();
+        hurtStunTimer = hurtStunDuration;
 
         Vector3 displacement = direction * speed * duration;
         Vector3 target = transform.position + displacement;
@@ -134,11 +141,12 @@ public class HumanFormEnemyAI : EnemyAI
     private void UpdateHurtState()
     {
         motor.StopMovement();
-        if (animator.IsCurrentAnimationDone())
+        hurtStunTimer -= Time.deltaTime;
+        if (hurtStunTimer <= 0f)
         {
             aiState = HumanFormEnemyAIState.Engage;
-            engageState = HumanFormEnemyEngageState.TryMoveCloserToAttackTarget;
-        }
+            engageState = HumanFormEnemyEngageState.TryMoveCloserToAttackTarget;}
+
     }
 
     private void UpdateKnockBackState()
@@ -275,14 +283,15 @@ public class HumanFormEnemyAI : EnemyAI
                 // 不然的话 TODO
                 break;
             case HumanFormEnemyEngageState.BeginAttackStartupAnimation:
-                // 开始动画
+                // 开始攻击前摇
                 motor.RotateToDirection(attackTarget.position);
                 animator.BeginAnimation(HumanFormEnemyAnimationState.WeaponAttackStartUp);
+                attackStartUpTimer = attackStartUpDuration;
                 engageState = HumanFormEnemyEngageState.WaitAttackStartupAnimationFinished;
                 break;
             case HumanFormEnemyEngageState.WaitAttackStartupAnimationFinished:
-                // 等待动画结束，开始正式攻击
-                if (animator.IsCurrentAnimationDone()) engageState = HumanFormEnemyEngageState.BeginAttackAnimation;
+                attackStartUpTimer -= Time.deltaTime;
+                if (attackStartUpTimer <= 0f) engageState = HumanFormEnemyEngageState.BeginAttackAnimation;
                 break;
             case HumanFormEnemyEngageState.BeginAttackAnimation:
                 // 开始动画

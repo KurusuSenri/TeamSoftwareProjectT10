@@ -132,6 +132,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HumanFormEnemyAI
   health: 100
+  damageCumulativeTillStun: 25
+  hurtStunDuration: 0.5
   aiState: 0
   idleState: 0
   engageState: 0
@@ -150,6 +152,7 @@ MonoBehaviour:
   avoidObstacleDistance: 3
   engageMoveMinDistance: 3
   engageMoveMaxDistance: 5
+  attackStartUpDuration: 0.5
 --- !u!114 &1252172511213038981
 MonoBehaviour:
   m_ObjectHideFlags: 0

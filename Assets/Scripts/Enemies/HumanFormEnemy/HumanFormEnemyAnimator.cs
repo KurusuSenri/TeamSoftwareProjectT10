@@ -124,10 +124,13 @@ public class HumanFormEnemyAnimator : MonoBehaviour
                 spriteRenderer.sprite = sprites[frameMapping.index];
 
             /**
-                if idle or walk or hurt, loop animation
+                if idle or walk or attack startup or hurt, loop animation
                 if attack or dead, play once and stop at last frame
             **/
-            if (animationState == HumanFormEnemyAnimationState.Idle || animationState == HumanFormEnemyAnimationState.Walk)
+            if (animationState == HumanFormEnemyAnimationState.Idle ||
+             animationState == HumanFormEnemyAnimationState.Walk ||
+              animationState == HumanFormEnemyAnimationState.WeaponAttackStartUp ||
+              animationState == HumanFormEnemyAnimationState.Hurt)
             {
                 int maxFrame = spriteMappings.Count(m => m.state == animationState && m.direction == animationDirection);
                 currentFrame = (currentFrame + 1) % maxFrame;
@@ -143,27 +146,6 @@ public class HumanFormEnemyAnimator : MonoBehaviour
                     // finish of attack animation
                     isAnimationDone = true;
                 } 
-            }
-            else if(animationState == HumanFormEnemyAnimationState.WeaponAttackStartUp)
-            {
-                // repeat n times for startup frames
-                attackStartUpFrameRepeatCounter++;
-                if(attackStartUpFrameRepeatCounter >= attackStartUpFrameRepeatTimes)
-                {
-                    attackStartUpFrameRepeatCounter = 0;
-                    isAnimationDone = true;
-                }
-            }else if (animationState == HumanFormEnemyAnimationState.Hurt)
-            {
-                Debug.Log("begin hurt frame update" + hurtFrameRepeatCounter);
-                // repeat n times for hurt frames
-                hurtFrameRepeatCounter++;
-                if(hurtFrameRepeatCounter >= hurtFrameRepeatTimes)
-                {
-                    hurtFrameRepeatCounter = 0;
-                    isAnimationDone = true;
-                    Debug.Log("Hurt animation done");
-                }
             }
         }
     }
