@@ -92,21 +92,19 @@ public class HumanFormEnemyAnimator : MonoBehaviour
         }
     }
 
-    private int attackStartUpFrameRepeatTimes = 3;
-    private int attackStartUpFrameRepeatCounter = 0;
-    private int hurtFrameRepeatTimes = 3;
-    private int hurtFrameRepeatCounter = 0;
     void Update()
     {
         // sprite renderer always face the camera
         spriteRenderer.transform.forward = Camera.main.transform.forward;
 
-        Vector3 camForward = Camera.main.transform.forward;
-        camForward.y = 0f;
-
-        float angle = Vector3.SignedAngle(camForward, transform.forward, Vector3.up);
-        HumanFormEnemyDirection dir = AngleToDirection(angle);
-        animationDirection = dir;
+        Vector3 toCamera = Camera.main.transform.position - transform.position;
+        toCamera.y = 0f;
+        if (toCamera.sqrMagnitude > 0.0001f)
+        {
+            float angle = Vector3.SignedAngle(transform.forward, toCamera, Vector3.up);
+            HumanFormEnemyDirection dir = AngleToDirection(angle);
+            animationDirection = dir;
+        }
 
         // play animation
         frameTimer += Time.deltaTime;
@@ -158,21 +156,21 @@ public class HumanFormEnemyAnimator : MonoBehaviour
     private HumanFormEnemyDirection AngleToDirection(float angle)
     {
         if (angle >= -22.5f && angle < 22.5f)
-            return HumanFormEnemyDirection.Back;
+            return HumanFormEnemyDirection.Front;
         else if (angle >= 22.5f && angle < 67.5f)
-            return HumanFormEnemyDirection.BackRight;
+            return HumanFormEnemyDirection.FrontRight;
         else if (angle >= 67.5f && angle < 112.5f)
             return HumanFormEnemyDirection.Right;
         else if (angle >= 112.5f && angle < 157.5f)
-            return HumanFormEnemyDirection.FrontRight;
+            return HumanFormEnemyDirection.BackRight;
         else if (angle >= 157.5f || angle < -157.5f)
-            return HumanFormEnemyDirection.Front;
+            return HumanFormEnemyDirection.Back;
         else if (angle >= -157.5f && angle < -112.5f)
-            return HumanFormEnemyDirection.FrontLeft;
+            return HumanFormEnemyDirection.BackLeft;
         else if (angle >= -112.5f && angle < -67.5f)
             return HumanFormEnemyDirection.Left;
         else
-            return HumanFormEnemyDirection.BackLeft; // -67.5 ~ -22.5
+            return HumanFormEnemyDirection.FrontLeft; // -67.5 ~ -22.5
     }
 
 }
